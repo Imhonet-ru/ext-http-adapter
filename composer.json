@@ -11,7 +11,7 @@
 
   "autoload": {
     "classmap": ["src/"],
-    "files": ["src/functions.php"]
+    "files": ["config/config.php", "src/functions.php"]
   },
 
   "require": {

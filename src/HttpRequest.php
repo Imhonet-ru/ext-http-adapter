@@ -1,5 +1,9 @@
 <?php
 
+if (\Imhonet\Ext_Http_Adapter\Config\DISABLE) {
+    return;
+}
+
 /**
  * @todo
  * @link http://php.net/manual/en/class.httprequest.php

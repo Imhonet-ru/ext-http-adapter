@@ -1,5 +1,9 @@
 <?php
 
+if (\Imhonet\Ext_Http_Adapter\Config\DISABLE) {
+    return;
+}
+
 // Start of http v.1.6.6
 
 class HttpException extends Exception
