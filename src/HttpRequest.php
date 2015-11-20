@@ -57,6 +57,16 @@ class HttpRequest
     const PROXY_SOCKS5 = 5;
     const PROXY_HTTP = 0;
 
+    private $meth_map = array(
+        self::METH_GET => 'GET',
+        self::METH_HEAD => 'HEAD',
+        self::METH_POST => 'POST',
+        self::METH_PUT => 'PUT',
+        self::METH_DELETE => 'DELETE',
+        self::METH_OPTIONS => 'OPTIONS',
+    );
+
+    private $headers;
     private $options;
     private $postFields;
     private $postFiles;
@@ -74,6 +84,8 @@ class HttpRequest
     private $history;
     public $recordHistory;
 
+    /** @type \Psr\Http\Message\ResponseInterface|null */
+    private $response;
 
     /**
      * (PECL pecl_http &gt;= 0.10.0)<br/>
@@ -88,7 +100,7 @@ class HttpRequest
      * @param array $options [optional] <p>
      * an associative array with request options
      * </p>
-     * @return void
+     * @return self
      */
     public function __construct($url = null, $request_method = HTTP_METH_GET, array $options = null)
     {
@@ -98,6 +110,7 @@ class HttpRequest
     }
 
     /**
+     * @todo options mapping into httplug terms
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Set options
      * @link http://php.net/manual/en/function.httprequest-setoptions.php
@@ -110,6 +123,13 @@ class HttpRequest
      */
     public function setOptions(array $options = null)
     {
+        if ($options) {
+            $this->options = $options + $this->getOptions();
+        } else {
+            $this->options = null;
+        }
+
+        return true;
     }
 
     /**
@@ -120,9 +140,11 @@ class HttpRequest
      */
     public function getOptions()
     {
+        return (array) $this->options;
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Set ssl options
      * @link http://php.net/manual/en/function.httprequest-setssloptions.php
@@ -137,6 +159,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get ssl options
      * @link http://php.net/manual/en/function.httprequest-getssloptions.php
@@ -147,6 +170,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.12.0)<br/>
      * Add ssl options
      * @link http://php.net/manual/en/function.httprequest-addssloptions.php
@@ -155,7 +179,7 @@ class HttpRequest
      * </p>
      * @return bool true on success or false on failure.
      */
-    public function addSslOptions(sarray $option)
+    public function addSslOptions(array $option)
     {
     }
 
@@ -170,6 +194,9 @@ class HttpRequest
      */
     public function addHeaders(array $headers)
     {
+        $this->headers = $headers + $this->getHeaders();
+
+        return true;
     }
 
     /**
@@ -180,6 +207,7 @@ class HttpRequest
      */
     public function getHeaders()
     {
+        return (array) $this->headers;
     }
 
     /**
@@ -194,9 +222,13 @@ class HttpRequest
      */
     public function setHeaders(array $headers = null)
     {
+        $this->headers = $headers;
+
+        return true;
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Add cookies
      * @link http://php.net/manual/en/function.httprequest-addcookies.php
@@ -210,6 +242,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get cookies
      * @link http://php.net/manual/en/function.httprequest-getcookies.php
@@ -220,6 +253,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.12.0)<br/>
      * Set cookies
      * @link http://php.net/manual/en/function.httprequest-setcookies.php
@@ -234,6 +268,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 1.0.0)<br/>
      * Enable cookies
      * @link http://php.net/manual/en/function.httprequest-enablecookies.php
@@ -244,6 +279,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 1.0.0)<br/>
      * Reset cookies
      * @link http://php.net/manual/en/function.httprequest-resetcookies.php
@@ -256,6 +292,9 @@ class HttpRequest
     {
     }
 
+    /**
+     * @todo
+     */
     public function flushCookies()
     {
     }
@@ -271,6 +310,9 @@ class HttpRequest
      */
     public function setMethod($request_method)
     {
+        $this->method = $request_method;
+
+        return true;
     }
 
     /**
@@ -281,6 +323,7 @@ class HttpRequest
      */
     public function getMethod()
     {
+        return $this->method;
     }
 
     /**
@@ -294,6 +337,9 @@ class HttpRequest
      */
     public function setUrl($url)
     {
+        $this->url = $url;
+
+        return true;
     }
 
     /**
@@ -304,9 +350,11 @@ class HttpRequest
      */
     public function getUrl()
     {
+        return $this->url;
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Set content type
      * @link http://php.net/manual/en/function.httprequest-setcontenttype.php
@@ -321,6 +369,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get content type
      * @link http://php.net/manual/en/function.httprequest-getcontenttype.php
@@ -331,6 +380,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Set query data
      * @link http://php.net/manual/en/function.httprequest-setquerydata.php
@@ -346,6 +396,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get query data
      * @link http://php.net/manual/en/function.httprequest-getquerydata.php
@@ -356,6 +407,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Add query data
      * @link http://php.net/manual/en/function.httprequest-addquerydata.php
@@ -369,6 +421,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Set post fields
      * @link http://php.net/manual/en/function.httprequest-setpostfields.php
@@ -383,6 +436,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get post fields
      * @link http://php.net/manual/en/function.httprequest-getpostfields.php
@@ -393,6 +447,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Add post fields
      * @link http://php.net/manual/en/function.httprequest-addpostfields.php
@@ -407,20 +462,13 @@ class HttpRequest
 
     /**
      * @param $request_body_data [optional]
+     * @return bool
      */
     public function setBody($request_body_data)
     {
-    }
+        $this->requestBody = $request_body_data;
 
-    public function getBody()
-    {
-    }
-
-    /**
-     * @param $request_body_data
-     */
-    public function addBody($request_body_data)
-    {
+        return true;
     }
 
     /**
@@ -434,6 +482,7 @@ class HttpRequest
      */
     public function setRawPostData($raw_post_data = null)
     {
+        return $this->setBody($raw_post_data);
     }
 
     /**
@@ -444,6 +493,7 @@ class HttpRequest
      */
     public function getRawPostData()
     {
+        return (string) $this->requestBody;
     }
 
     /**
@@ -457,9 +507,11 @@ class HttpRequest
      */
     public function addRawPostData($raw_post_data)
     {
+        return $this->setBody($raw_post_data);
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Set post files
      * @link http://php.net/manual/en/function.httprequest-setpostfiles.php
@@ -474,6 +526,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Add post file
      * @link http://php.net/manual/en/function.httprequest-addpostfile.php
@@ -494,6 +547,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get post files
      * @link http://php.net/manual/en/function.httprequest-getpostfiles.php
@@ -515,6 +569,9 @@ class HttpRequest
      */
     public function setPutFile($file = null)
     {
+        $this->putFile = $file;
+
+        return true;
     }
 
     /**
@@ -525,6 +582,7 @@ class HttpRequest
      */
     public function getPutFile()
     {
+        return (string) $this->putFile;
     }
 
     /**
@@ -538,6 +596,9 @@ class HttpRequest
      */
     public function setPutData($put_data = null)
     {
+        $this->putData = $put_data;
+
+        return true;
     }
 
     /**
@@ -548,6 +609,7 @@ class HttpRequest
      */
     public function getPutData()
     {
+        return (string) $this->putData;
     }
 
     /**
@@ -561,6 +623,9 @@ class HttpRequest
      */
     public function addPutData($put_data)
     {
+        $this->putData .= $put_data;
+
+        return true;
     }
 
     /**
@@ -568,12 +633,105 @@ class HttpRequest
      * Send request
      * @link http://php.net/manual/en/function.httprequest-send.php
      * @return HttpMessage the received response as HttpMessage object.
+     * @throws HttpRuntimeException
+     * @throws HttpRequestException
      */
     public function send()
     {
+        $response = $this->getResponse();
+        $result = new HttpMessage();
+        $result->setBody($response->getBody()->getContents());
+
+        return $result;
+    }
+
+    private function hasResponse()
+    {
+        return (bool) $this->response;
     }
 
     /**
+     * @throws HttpRequestException
+     * @throws HttpRuntimeException
+     */
+    private function getResponse()
+    {
+        if (!$this->hasResponse()) {
+            try {
+                $this->response = $this->getResourse()->sendRequest($this->getRequest());
+            } catch (HttpRuntimeException $e) {
+                throw $e;
+            } catch (Exception $e) {
+                // @todo error msg
+                throw new HttpRequestException;
+            }
+        }
+
+        return $this->response;
+    }
+
+    /**
+     * @return \Http\Client\HttpClient
+     * @throws HttpRuntimeException
+     */
+    private function getResourse()
+    {
+        try {
+            $result = Http\Discovery\HttpClientDiscovery::find();
+        } catch (Http\Discovery\NotFoundException $e) {
+            // @todo error msg
+            throw new HttpRuntimeException;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return \Psr\Http\Message\RequestInterface
+     * @throws HttpRuntimeException
+     */
+    private function getRequest()
+    {
+        $method = $this->meth_map[$this->getMethod()];
+
+        try {
+            $result = Http\Discovery\MessageFactoryDiscovery::find()
+                ->createRequest($method, $this->getUrl(), $this->getHeaders(), $this->getBody());
+        } catch (Http\Discovery\NotFoundException $e) {
+            // @todo error msg
+            throw new HttpRuntimeException;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return mixed
+     * @throws HttpRuntimeException
+     * @throws Http\Discovery\NotFoundException
+     */
+    private function getBody()
+    {
+        if ($this->putData) {
+            $data = $this->putData;
+        } elseif ($this->putFile) {
+            $data = fopen($this->putFile, 'r');
+        } else {
+            $data = $this->requestBody;
+        }
+
+        try {
+            $result = Http\Discovery\StreamFactoryDiscovery::find()->createStream($data);
+        } catch (InvalidArgumentException $e) {
+            // @todo error msg
+            throw new HttpRuntimeException;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get response data
      * @link http://php.net/manual/en/function.httprequest-getresponsedata.php
@@ -586,6 +744,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get response header(s)
      * @link http://php.net/manual/en/function.httprequest-getresponseheader.php
@@ -600,6 +759,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.23.0)<br/>
      * Get response cookie(s)
      * @link http://php.net/manual/en/function.httprequest-getresponsecookies.php
@@ -623,9 +783,11 @@ class HttpRequest
      */
     public function getResponseCode()
     {
+        return $this->hasResponse() ? $this->getResponse()->getResponseCode() : 0;
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.23.0)<br/>
      * Get response status
      * @link http://php.net/manual/en/function.httprequest-getresponsestatus.php
@@ -643,9 +805,11 @@ class HttpRequest
      */
     public function getResponseBody()
     {
+        return $this->hasResponse() ? $this->getResponse()->getBody()->getContents() : false;
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get response info
      * @link http://php.net/manual/en/function.httprequest-getresponseinfo.php
@@ -662,6 +826,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get response message
      * @link http://php.net/manual/en/function.httprequest-getresponsemessage.php
@@ -672,6 +837,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.21.0)<br/>
      * Get raw response message
      * @link http://php.net/manual/en/function.httprequest-getrawresponsemessage.php
@@ -682,6 +848,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.11.0)<br/>
      * Get request message
      * @link http://php.net/manual/en/function.httprequest-getrequestmessage.php
@@ -692,6 +859,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.21.0)<br/>
      * Get raw request message
      * @link http://php.net/manual/en/function.httprequest-getrawrequestmessage.php
@@ -702,6 +870,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.15.0)<br/>
      * Get history
      * @link http://php.net/manual/en/function.httprequest-gethistory.php
@@ -712,6 +881,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.15.0)<br/>
      * Clear history
      * @link http://php.net/manual/en/function.httprequest-clearhistory.php
@@ -726,12 +896,15 @@ class HttpRequest
      * @param $method [optional]
      * @param $options [optional]
      * @param $class_name [optional]
+     * @return self
      */
     public static function factory($url, $method, $options, $class_name)
     {
+        return new self($url, $method, $options, $class_name);
     }
 
     /**
+     * @todo
      * @param $url
      * @param $options [optional]
      * @param $info [optional]
@@ -741,6 +914,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * @param $url
      * @param $options [optional]
      * @param $info [optional]
@@ -750,6 +924,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * @param $url
      * @param $data
      * @param $options [optional]
@@ -760,6 +935,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * @param $url
      * @param $data
      * @param $options [optional]
@@ -770,6 +946,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * @param $url
      * @param $data
      * @param $options [optional]
@@ -780,6 +957,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * @param $url
      * @param $file
      * @param $options [optional]
@@ -790,6 +968,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * @param $url
      * @param $stream
      * @param $options [optional]
@@ -800,6 +979,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * @param $method_name
      */
     public static function methodRegister($method_name)
@@ -807,6 +987,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * @param $method
      */
     public static function methodUnregister($method)
@@ -814,6 +995,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * @param $method_id
      */
     public static function methodName($method_id)
@@ -821,6 +1003,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * @param $method
      */
     public static function methodExists($method)
@@ -828,6 +1011,7 @@ class HttpRequest
     }
 
     /**
+     * @todo
      * @param $fields
      * @param $files
      */

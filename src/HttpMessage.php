@@ -8,7 +8,7 @@ if (\Imhonet\Ext_Http_Adapter\Config\DISABLE) {
  * @todo
  * @link http://php.net/manual/en/class.httpmessage.php
  */
-class HttpMessage implements Countable, Serializable, Iterator, Traversable
+class HttpMessage implements Countable, Serializable, Iterator
 {
     const TYPE_NONE = 0;
     const TYPE_REQUEST = 1;
@@ -32,10 +32,11 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
      * @param string $message [optional] <p>
      * a single or several consecutive HTTP messages
      * </p>
-     * @return void
+     * @return self
      */
     public function __construct($message = null)
     {
+        $this->body = $message;
     }
 
     /**
@@ -46,6 +47,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
      */
     public function getBody()
     {
+        return (string) $this->body;
     }
 
     /**
@@ -59,9 +61,11 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
      */
     public function setBody($body)
     {
+        $this->body = $body;
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 1.1.0)<br/>
      * Get header
      * @link http://php.net/manual/en/function.httpmessage-getheader.php
@@ -75,6 +79,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get message headers
      * @link http://php.net/manual/en/function.httpmessage-getheaders.php
@@ -85,6 +90,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Set headers
      * @link http://php.net/manual/en/function.httpmessage-setheaders.php
@@ -98,6 +104,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Add headers
      * @link http://php.net/manual/en/function.httpmessage-addheaders.php
@@ -116,6 +123,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get message type
      * @link http://php.net/manual/en/function.httpmessage-gettype.php
@@ -126,6 +134,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Set message type
      * @link http://php.net/manual/en/function.httpmessage-settype.php
@@ -138,11 +147,15 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     {
     }
 
+    /**
+     * @todo
+     */
     public function getInfo()
     {
     }
 
     /**
+     * @todo
      * @param $http_info
      */
     public function setInfo($http_info)
@@ -150,6 +163,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get response code
      * @link http://php.net/manual/en/function.httpmessage-getresponsecode.php
@@ -160,6 +174,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Set response code
      * @link http://php.net/manual/en/function.httpmessage-setresponsecode.php
@@ -174,6 +189,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.23.0)<br/>
      * Get response status
      * @link http://php.net/manual/en/function.httpmessage-getresponsestatus.php
@@ -185,6 +201,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.23.0)<br/>
      * Set response status
      * @link http://php.net/manual/en/function.httpmessage-setresponsestatus.php
@@ -199,6 +216,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get request method
      * @link http://php.net/manual/en/function.httpmessage-getrequestmethod.php
@@ -210,6 +228,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Set request method
      * @link http://php.net/manual/en/function.httpmessage-setrequestmethod.php
@@ -224,6 +243,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.21.0)<br/>
      * Get request URL
      * @link http://php.net/manual/en/function.httpmessage-getrequesturl.php
@@ -235,6 +255,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.21.0)<br/>
      * Set request URL
      * @link http://php.net/manual/en/function.httpmessage-setrequesturl.php
@@ -249,6 +270,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get HTTP version
      * @link http://php.net/manual/en/function.httpmessage-gethttpversion.php
@@ -259,6 +281,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Set HTTP version
      * @link http://php.net/manual/en/function.httpmessage-sethttpversion.php
@@ -272,6 +295,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 1.0.0)<br/>
      * Guess content type
      * @link http://php.net/manual/en/function.httpmessage-guesscontenttype.php
@@ -288,6 +312,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get parent message
      * @link http://php.net/manual/en/function.httpmessage-getparentmessage.php
@@ -298,6 +323,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Send message
      * @link http://php.net/manual/en/function.httpmessage-send.php
@@ -308,6 +334,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get string representation
      * @link http://php.net/manual/en/function.httpmessage-tostring.php
@@ -321,6 +348,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.22.0)<br/>
      * Create HTTP object regarding message type
      * @link http://php.net/manual/en/function.httpmessage-tomessagetypeobject.php
@@ -330,42 +358,65 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     {
     }
 
+    /**
+     * @todo
+     */
     public function count()
     {
     }
 
+    /**
+     * @todo
+     */
     public function serialize()
     {
     }
 
     /**
+     * @todo
      * @param $serialized
      */
     public function unserialize($serialized)
     {
     }
 
+    /**
+     * @todo
+     */
     public function rewind()
     {
     }
 
+    /**
+     * @todo
+     */
     public function valid()
     {
     }
 
+    /**
+     * @todo
+     */
     public function current()
     {
     }
 
+    /**
+     * @todo
+     */
     public function key()
     {
     }
 
+    /**
+     * @todo
+     */
     public function next()
     {
     }
 
     /**
+     * @todo
      * @return string
      */
     public function __toString()
@@ -384,11 +435,13 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
      * </p>
      * @return HttpMessage an HttpMessage object on success or NULL on failure.
      */
-    public static function factory($raw_message = null, $class_name = null)
+    public static function factory($raw_message = null, $class_name = 'HttpMessage')
     {
+        return new $class_name($raw_message);
     }
 
     /**
+     * @todo
      * (PECL pecl_http 0.10.0-1.3.3)<br/>
      * Create HttpMessage from string
      * @link http://php.net/manual/en/function.httpmessage-fromstring.php
@@ -405,6 +458,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 1.5.0)<br/>
      * Create HttpMessage from environment
      * @link http://php.net/manual/en/function.httpmessage-fromenv.php
@@ -421,6 +475,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.22.0)<br/>
      * Detach HttpMessage
      * @link http://php.net/manual/en/function.httpmessage-detach.php
@@ -431,6 +486,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.22.0)<br/>
      * Prepend message(s)
      * @link http://php.net/manual/en/function.httpmessage-prepend.php
@@ -447,6 +503,7 @@ class HttpMessage implements Countable, Serializable, Iterator, Traversable
     }
 
     /**
+     * @todo
      * (PECL pecl_http &gt;= 0.23.0)<br/>
      * Reverse message chain
      * @link http://php.net/manual/en/function.httpmessage-reverse.php
