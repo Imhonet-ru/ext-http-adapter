@@ -14,8 +14,14 @@
     "files": ["config/config.php", "src/functions.php"]
   },
 
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "require": {
     "php": ">=5.3",
-    "lib-curl": "*"
+    "php-http/client-implementation": "^1.0",
+    "php-http/discovery": "~0.4"
+  },
+  "require-dev": {
+    "php-http/guzzle6-adapter": "~0.2"
   }
 }
