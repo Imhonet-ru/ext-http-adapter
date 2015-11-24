@@ -86,6 +86,8 @@ class HttpRequest
 
     /** @type \Psr\Http\Message\ResponseInterface|null */
     private $response;
+    /** @type HttpMessage|null */
+    private $message;
 
     /**
      * (PECL pecl_http &gt;= 0.10.0)<br/>
@@ -638,14 +640,10 @@ class HttpRequest
      */
     public function send()
     {
-        $response = $this->getResponse();
-        $result = new HttpMessage();
-        $result->setBody($response->getBody()->getContents());
-
-        return $result;
+        return $this->getResponseMessage();
     }
 
-    private function hasResponse()
+    private function isSend()
     {
         return (bool) $this->response;
     }
@@ -657,7 +655,7 @@ class HttpRequest
      */
     private function getResponse()
     {
-        if (!$this->hasResponse()) {
+        if (!$this->isSend()) {
             $resource = $this->getResourse();
             $resource->setConfiguration($this->getConfig());
             $this->response = $resource->send(
@@ -780,7 +778,7 @@ class HttpRequest
      */
     public function getResponseCode()
     {
-        return $this->hasResponse() ? $this->getResponse()->getResponseCode() : 0;
+        return $this->isSend() ? $this->getResponseMessage()->getResponseCode() : 0;
     }
 
     /**
@@ -802,7 +800,7 @@ class HttpRequest
      */
     public function getResponseBody()
     {
-        return $this->hasResponse() ? $this->getResponse()->getBody()->getContents() : false;
+        return $this->isSend() ? $this->getResponseMessage()->getBody() : false;
     }
 
     /**
@@ -823,7 +821,6 @@ class HttpRequest
     }
 
     /**
-     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get response message
      * @link http://php.net/manual/en/function.httprequest-getresponsemessage.php
@@ -831,6 +828,15 @@ class HttpRequest
      */
     public function getResponseMessage()
     {
+        if (!$this->message) {
+            $response = $this->getResponse();
+            $this->message = new HttpMessage();
+            $this->message->setType(HTTP_MSG_RESPONSE);
+            $this->message->setResponseCode($response->getStatusCode());
+            $this->message->setBody($response->getBody()->getContents());
+        }
+
+        return $this->message;
     }
 
     /**

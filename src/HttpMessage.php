@@ -123,7 +123,6 @@ class HttpMessage implements Countable, Serializable, Iterator
     }
 
     /**
-     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get message type
      * @link http://php.net/manual/en/function.httpmessage-gettype.php
@@ -131,10 +130,10 @@ class HttpMessage implements Countable, Serializable, Iterator
      */
     public function getType()
     {
+        return $this->type;
     }
 
     /**
-     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Set message type
      * @link http://php.net/manual/en/function.httpmessage-settype.php
@@ -145,6 +144,7 @@ class HttpMessage implements Countable, Serializable, Iterator
      */
     public function setType($type)
     {
+        $this->type = $type;
     }
 
     /**
@@ -163,7 +163,6 @@ class HttpMessage implements Countable, Serializable, Iterator
     }
 
     /**
-     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get response code
      * @link http://php.net/manual/en/function.httpmessage-getresponsecode.php
@@ -171,10 +170,10 @@ class HttpMessage implements Countable, Serializable, Iterator
      */
     public function getResponseCode()
     {
+        return $this->getType() === self::TYPE_RESPONSE ? $this->responseCode : false;
     }
 
     /**
-     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Set response code
      * @link http://php.net/manual/en/function.httpmessage-setresponsecode.php
@@ -186,6 +185,13 @@ class HttpMessage implements Countable, Serializable, Iterator
      */
     public function setResponseCode($code)
     {
+        $result = $this->getType() === self::TYPE_RESPONSE;
+
+        if ($result) {
+            $this->responseCode = $code;
+        }
+
+        return $result;
     }
 
     /**
