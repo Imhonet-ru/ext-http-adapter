@@ -18,10 +18,9 @@
   "prefer-stable": true,
   "require": {
     "php": ">=5.3",
-    "php-http/client-implementation": "^1.0",
-    "php-http/discovery": "~0.4"
+    "egeloen/http-adapter": "^0.8.0"
   },
   "require-dev": {
-    "php-http/guzzle6-adapter": "~0.2"
+    "guzzlehttp/guzzle": "^6.0"
   }
 }

@@ -651,34 +651,47 @@ class HttpRequest
     }
 
     /**
+     * @return \Psr\Http\Message\ResponseInterface
      * @throws HttpRequestException
      * @throws HttpRuntimeException
      */
     private function getResponse()
     {
         if (!$this->hasResponse()) {
-            try {
-                $this->response = $this->getResourse()->sendRequest($this->getRequest());
-            } catch (HttpRuntimeException $e) {
-                throw $e;
-            } catch (Exception $e) {
-                // @todo error msg
-                throw new HttpRequestException;
-            }
+            $resource = $this->getResourse();
+            $resource->setConfiguration($this->getConfig());
+            $this->response = $resource->send(
+                $this->getUrl(),
+                $this->meth_map[$this->getMethod()],
+                $this->headers,
+                $this->getBody() ? : array(),
+                $this->getFiles()
+            );
         }
 
         return $this->response;
     }
 
+    private function getConfig()
+    {
+        $result = new \Ivory\HttpAdapter\Configuration();
+
+        if (isset($this->options['timeout'])) {
+            $result->setTimeout($this->options['timeout']);
+        }
+
+        return $result;
+    }
+
     /**
-     * @return \Http\Client\HttpClient
+     * @return \Ivory\HttpAdapter\HttpAdapterInterface
      * @throws HttpRuntimeException
      */
     private function getResourse()
     {
         try {
-            $result = Http\Discovery\HttpClientDiscovery::find();
-        } catch (Http\Discovery\NotFoundException $e) {
+            $result = \Ivory\HttpAdapter\HttpAdapterFactory::guess();
+        } catch (\Ivory\HttpAdapter\HttpAdapterException $e) {
             // @todo error msg
             throw new HttpRuntimeException;
         }
@@ -687,44 +700,28 @@ class HttpRequest
     }
 
     /**
-     * @return \Psr\Http\Message\RequestInterface
-     * @throws HttpRuntimeException
-     */
-    private function getRequest()
-    {
-        $method = $this->meth_map[$this->getMethod()];
-
-        try {
-            $result = Http\Discovery\MessageFactoryDiscovery::find()
-                ->createRequest($method, $this->getUrl(), $this->getHeaders(), $this->getBody());
-        } catch (Http\Discovery\NotFoundException $e) {
-            // @todo error msg
-            throw new HttpRuntimeException;
-        }
-
-        return $result;
-    }
-
-    /**
-     * @return mixed
-     * @throws HttpRuntimeException
-     * @throws Http\Discovery\NotFoundException
+     * @return string|null
      */
     private function getBody()
     {
-        if ($this->putData) {
+        if ($this->method === self::METH_PUT && $this->putData) {
             $data = $this->putData;
-        } elseif ($this->putFile) {
-            $data = fopen($this->putFile, 'r');
         } else {
             $data = $this->requestBody;
         }
 
-        try {
-            $result = Http\Discovery\StreamFactoryDiscovery::find()->createStream($data);
-        } catch (InvalidArgumentException $e) {
-            // @todo error msg
-            throw new HttpRuntimeException;
+        return $data;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getFiles()
+    {
+        if ($this->method === self::METH_PUT && $this->putFile) {
+            $result = [$this->putFile];
+        } else {
+            $result = (array) $this->postFiles;
         }
 
         return $result;
