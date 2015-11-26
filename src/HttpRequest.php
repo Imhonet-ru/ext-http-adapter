@@ -146,7 +146,7 @@ class HttpRequest
     }
 
     /**
-     * @todo
+     * @todo implement after https://github.com/egeloen/ivory-http-adapter/pull/62 acceptance
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Set ssl options
      * @link http://php.net/manual/en/function.httprequest-setssloptions.php
@@ -158,6 +158,7 @@ class HttpRequest
      */
     public function setSslOptions(array $options = null)
     {
+        return false;
     }
 
     /**
