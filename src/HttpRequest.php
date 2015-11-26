@@ -64,6 +64,10 @@ class HttpRequest
         self::METH_PUT => 'PUT',
         self::METH_DELETE => 'DELETE',
         self::METH_OPTIONS => 'OPTIONS',
+        self::METH_TRACE => 'TRACE',
+        self::METH_CONNECT => 'CONNECT',
+        self::METH_COPY => 'COPY',
+        self::METH_MOVE => 'MOVE',
     );
 
     private $headers;
@@ -106,13 +110,13 @@ class HttpRequest
      */
     public function __construct($url = null, $request_method = HTTP_METH_GET, array $options = null)
     {
-        $this->url = $url;
-        $this->method = $request_method;
-        $this->options = $options;
+        $this->setUrl($url);
+        $this->setMethod($request_method);
+        $this->setOptions($options);
     }
 
     /**
-     * @todo options mapping into httplug terms
+     * @todo mapping for connecttimeout, referer
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Set options
      * @link http://php.net/manual/en/function.httprequest-setoptions.php
@@ -682,6 +686,10 @@ class HttpRequest
 
         if (isset($this->options['timeout'])) {
             $result->setTimeout($this->options['timeout']);
+        }
+
+        if (isset($this->options['useragent'])) {
+            $result->setUserAgent($this->options['useragent']);
         }
 
         return $result;
