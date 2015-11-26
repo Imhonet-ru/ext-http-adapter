@@ -658,13 +658,18 @@ class HttpRequest
         if (!$this->isSend()) {
             $resource = $this->getResourse();
             $resource->setConfiguration($this->getConfig());
-            $this->response = $resource->send(
-                $this->getUrl(),
-                $this->meth_map[$this->getMethod()],
-                $this->headers,
-                $this->getBody() ? : array(),
-                $this->getFiles()
-            );
+
+            try {
+                $this->response = $resource->send(
+                    $this->getUrl(),
+                    $this->meth_map[$this->getMethod()],
+                    $this->headers,
+                    $this->getBody() ? : array(),
+                    $this->getFiles()
+                );
+            } catch (\Ivory\HttpAdapter\HttpAdapterException $e) {
+                throw new HttpRequestException($e->getMessage(), 0, $e);
+            }
         }
 
         return $this->response;
@@ -690,8 +695,7 @@ class HttpRequest
         try {
             $result = \Ivory\HttpAdapter\HttpAdapterFactory::guess();
         } catch (\Ivory\HttpAdapter\HttpAdapterException $e) {
-            // @todo error msg
-            throw new HttpRuntimeException;
+            throw new HttpRuntimeException($e->getMessage(), 0, $e);
         }
 
         return $result;
