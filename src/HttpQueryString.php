@@ -18,11 +18,10 @@ class HttpQueryString implements Serializable, ArrayAccess
     const TYPE_OBJECT = 5;
 
     private static $instance;
-    private $queryArray;
-    private $queryString;
-
+    private $params = array();
 
     /**
+     * @todo support $global
      * (PECL pecl_http &gt;= 0.22.0)<br/>
      * HttpQueryString constructor
      * @link http://php.net/manual/en/function.httpquerystring-construct.php
@@ -34,8 +33,10 @@ class HttpQueryString implements Serializable, ArrayAccess
      * additional/initial query string parameters
      * </p>
      */
-    final public function __construct($global = null, $add = null)
+    final public function __construct($global = true, $add = null)
     {
+        assert($global === false, 'Operations on $_GET and $_SERVER[\'QUERY_STRING\'] not yet supported');
+        $this->set($add);
     }
 
     /**
@@ -46,6 +47,7 @@ class HttpQueryString implements Serializable, ArrayAccess
      */
     public function toArray()
     {
+        return $this->params;
     }
 
     /**
@@ -56,6 +58,7 @@ class HttpQueryString implements Serializable, ArrayAccess
      */
     public function toString()
     {
+        return http_build_query($this->toArray());
     }
 
     /**
@@ -98,6 +101,11 @@ class HttpQueryString implements Serializable, ArrayAccess
      */
     public function set($params)
     {
+        if (is_string($params)) {
+            parse_str($params, $params);
+        }
+
+        $this->params = (array) $params + $this->params;
     }
 
     /**
@@ -172,8 +180,9 @@ class HttpQueryString implements Serializable, ArrayAccess
      * @param $params [optional]
      * @param $class_name [optional]
      */
-    public static function factory($global, $params, $class_name)
+    public static function factory($global = true, $params = null, $class_name = __CLASS__)
     {
+        return new $class_name($global, $params);
     }
 
     /**
@@ -186,8 +195,9 @@ class HttpQueryString implements Serializable, ArrayAccess
      * </p>
      * @return HttpQueryString always the same HttpQueryString instance regarding the global setting.
      */
-    public static function singleton($global = null)
+    public static function singleton($global = true)
     {
+        return self::$instance ? : self::$instance = self::factory($global);
     }
 
     /**
