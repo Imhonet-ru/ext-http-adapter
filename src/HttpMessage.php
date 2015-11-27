@@ -65,21 +65,20 @@ class HttpMessage implements Countable, Serializable, Iterator
     }
 
     /**
-     * @todo
      * (PECL pecl_http &gt;= 1.1.0)<br/>
      * Get header
      * @link http://php.net/manual/en/function.httpmessage-getheader.php
      * @param string $header <p>
      * header name
      * </p>
-     * @return string the header value on success or NULL if the header does not exist.
+     * @return string|string[] the header value on success or NULL if the header does not exist.
      */
     public function getHeader($header)
     {
+        return array_key_exists($header, $this->getHeaders()) ? $this->headers[$header] : null;
     }
 
     /**
-     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get message headers
      * @link http://php.net/manual/en/function.httpmessage-getheaders.php
@@ -87,20 +86,21 @@ class HttpMessage implements Countable, Serializable, Iterator
      */
     public function getHeaders()
     {
+        return (array) $this->headers;
     }
 
     /**
-     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Set headers
      * @link http://php.net/manual/en/function.httpmessage-setheaders.php
-     * @param array $headers <p>
+     * @param string[]|array[] $headers <p>
      * associative array containing the new HTTP headers, which will replace all previous HTTP headers of the message
      * </p>
      * @return void
      */
-    public function setHeaders(sarray $header)
+    public function setHeaders(array $headers)
     {
+        $this->headers = $headers;
     }
 
     /**

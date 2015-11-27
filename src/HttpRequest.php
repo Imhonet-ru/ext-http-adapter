@@ -668,7 +668,7 @@ class HttpRequest
                 $this->response = $resource->send(
                     $this->getUrl(),
                     $this->meth_map[$this->getMethod()],
-                    $this->headers,
+                    $this->getHeaders(),
                     $this->getBody() ? : array(),
                     $this->getFiles()
                 );
@@ -764,6 +764,15 @@ class HttpRequest
      */
     public function getResponseHeader($name = null)
     {
+        $result = false;
+
+        if ($this->isSend()) {
+            $result = $name === null
+                ? $this->getResponseMessage()->getHeaders()
+                : $this->getResponseMessage()->getHeader($name);
+        }
+
+        return $result;
     }
 
     /**
@@ -846,10 +855,23 @@ class HttpRequest
             $this->message = new HttpMessage();
             $this->message->setType(HTTP_MSG_RESPONSE);
             $this->message->setResponseCode($response->getStatusCode());
+            $this->message->setHeaders($this->normalizeHeaders($response->getHeaders()));
             $this->message->setBody($response->getBody()->getContents());
         }
 
         return $this->message;
+    }
+
+    private function normalizeHeaders(array $headers)
+    {
+        foreach ($headers as $name => & $values) {
+            if (sizeof($values) == 1) {
+                $values = reset($values);
+            }
+        }
+        unset($values);
+
+        return $headers;
     }
 
     /**
