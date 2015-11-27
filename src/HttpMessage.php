@@ -36,7 +36,7 @@ class HttpMessage implements Countable, Serializable, Iterator
      */
     public function __construct($message = null)
     {
-        $this->body = $message;
+        $this->setBody($message);
     }
 
     /**
