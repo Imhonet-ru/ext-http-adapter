@@ -1,0 +1,26 @@
+{
+  "name": "imhonet/ext-http-adapter",
+  "description": "PHP >=5.6 compatible adapter for HTTP v.1 extension",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Serjick",
+      "email": "shiyanov@imhoclub.ru"
+    }
+  ],
+
+  "autoload": {
+    "classmap": ["src/"],
+    "files": ["config/config.php", "src/functions.php"]
+  },
+
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "php": ">=5.3",
+    "egeloen/http-adapter": "^0.8.0"
+  },
+  "require-dev": {
+    "guzzlehttp/guzzle": "^6.0"
+  }
+}
