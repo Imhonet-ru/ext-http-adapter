@@ -15,29 +15,6 @@ if (!\Imhonet\Ext_Http_Adapter\Config\DISABLE) {
     }
 
     /**
-     * (PECL pecl_http &gt;= 0.21.0)<br/>
-     * Build an URL
-     * @link http://php.net/manual/en/function.http-build-url.php
-     * @param mixed $url [optional] <p>
-     * (part(s) of) an URL in form of a string or associative array like parse_url returns
-     * </p>
-     * @param mixed $parts [optional] <p>
-     * same as the first argument
-     * </p>
-     * @param int $flags [optional] <p>
-     * a bitmask of binary or'ed HTTP_URL constants;
-     * HTTP_URL_REPLACE is the default
-     * </p>
-     * @param array $new_url [optional] <p>
-     * if set, it will be filled with the parts of the composed url like parse_url would return
-     * </p>
-     * @return string the new URL as string on success or false on failure.
-     */
-    function http_build_url($url = null, $parts = null, $flags = null, array &$new_url = null)
-    {
-    }
-
-    /**
      * (PECL pecl_http &gt;= 0.23.0)<br/>
      * Build query string
      * @link http://php.net/manual/en/function.http-build-str.php
