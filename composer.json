@@ -18,6 +18,7 @@
   "prefer-stable": true,
   "require": {
     "php": ">=5.3",
+    "ext-fileinfo": "*",
     "egeloen/http-adapter": "^0.8.0",
     "jakeasmith/http_build_url": "^1"
   },

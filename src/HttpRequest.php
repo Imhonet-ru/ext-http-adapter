@@ -217,6 +217,19 @@ class HttpRequest
         return (array) $this->headers;
     }
 
+    private function getHeadersAuto()
+    {
+        $result = $this->getHeaders();
+
+        if ($this->hasContentType()) {
+            $result += array('Content-Type' => $this->getContentType());
+        } elseif ($this->getBody()) {
+            $result += array('Content-Type' => $this->getBodyContentType());
+        }
+
+        return $result;
+    }
+
     /**
      * (PECL pecl_http &gt;= 0.12.0)<br/>
      * Set headers
@@ -361,7 +374,6 @@ class HttpRequest
     }
 
     /**
-     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Set content type
      * @link http://php.net/manual/en/function.httprequest-setcontenttype.php
@@ -373,10 +385,12 @@ class HttpRequest
      */
     public function setContentType($content_type)
     {
+        $this->contentType = $content_type;
+
+        return true;
     }
 
     /**
-     * @todo
      * (PECL pecl_http &gt;= 0.10.0)<br/>
      * Get content type
      * @link http://php.net/manual/en/function.httprequest-getcontenttype.php
@@ -384,6 +398,12 @@ class HttpRequest
      */
     public function getContentType()
     {
+        return (string) $this->contentType;
+    }
+
+    private function hasContentType()
+    {
+        return $this->contentType !== null;
     }
 
     /**
@@ -619,6 +639,11 @@ class HttpRequest
         return (string) $this->putData;
     }
 
+    private function hasPutData()
+    {
+        return $this->putData !== null;
+    }
+
     /**
      * (PECL pecl_http &gt;= 0.25.0)<br/>
      * Add put data
@@ -668,7 +693,7 @@ class HttpRequest
                 $this->response = $resource->send(
                     $this->getUrl(),
                     $this->meth_map[$this->getMethod()],
-                    $this->getHeaders(),
+                    $this->getHeadersAuto(),
                     $this->getBody() ? : array(),
                     $this->getFiles()
                 );
@@ -711,17 +736,22 @@ class HttpRequest
     }
 
     /**
-     * @return string|null
+     * @return string
      */
     private function getBody()
     {
-        if ($this->method === self::METH_PUT && $this->putData) {
-            $data = $this->putData;
+        if ($this->method === self::METH_PUT && $this->hasPutData()) {
+            $data = $this->getPutData();
         } else {
-            $data = $this->requestBody;
+            $data = $this->getRawPostData();
         }
 
         return $data;
+    }
+
+    private function getBodyContentType()
+    {
+        return (new finfo(FILEINFO_MIME_TYPE))->buffer($this->getBody());
     }
 
     /**
